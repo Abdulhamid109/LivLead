@@ -3,7 +3,29 @@
 import Link from "next/link";
 import React, { useMemo, useState } from "react";
 
-const leads = [
+type LeadStatus =
+  | "New"
+  | "Qualified"
+  | "Contacted"
+  | "Interested"
+  | "Not interested";
+
+type SortOption = "score" | "name" | "recent";
+
+interface Lead {
+  id: number;
+  name: string;
+  category: string;
+  location: string;
+  website: string;
+  opportunity: string;
+  score: number;
+  status: LeadStatus;
+  contacted: string;
+  lastActivity: string;
+}
+
+const leads: Lead[] = [
   {
     id: 1,
     name: "FitZone Gym",
@@ -102,27 +124,32 @@ const leads = [
   },
 ];
 
-const statusStyles = {
+const statusStyles: Record<LeadStatus, string> = {
   New: "bg-zinc-800 text-zinc-400",
-  Qualified: "bg-green-500/10 text-green-400 border border-green-500/20",
-  Contacted: "bg-blue-500/10 text-blue-400 border border-blue-500/20",
-  Interested: "bg-orange-500/10 text-orange-400 border border-orange-500/20",
+  Qualified:
+    "bg-green-500/10 text-green-400 border border-green-500/20",
+  Contacted:
+    "bg-blue-500/10 text-blue-400 border border-blue-500/20",
+  Interested:
+    "bg-orange-500/10 text-orange-400 border border-orange-500/20",
   "Not interested":
     "bg-red-500/10 text-red-400 border border-red-500/20",
 };
 
 const Page = () => {
-  const [search, setSearch] = useState("");
-  const [status, setStatus] = useState("All");
-  const [sort, setSort] = useState("score");
-  const [selectedLead, setSelectedLead] = useState(null);
+  const [search, setSearch] = useState<string>("");
+  const [status, setStatus] = useState<LeadStatus | "All">("All");
+  const [sort, setSort] = useState<SortOption>("score");
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
 
   const filteredLeads = useMemo(() => {
-    let result = leads.filter((lead) => {
+    const result = leads.filter((lead) => {
+      const searchValue = search.toLowerCase();
+
       const matchesSearch =
-        lead.name.toLowerCase().includes(search.toLowerCase()) ||
-        lead.location.toLowerCase().includes(search.toLowerCase()) ||
-        lead.category.toLowerCase().includes(search.toLowerCase());
+        lead.name.toLowerCase().includes(searchValue) ||
+        lead.location.toLowerCase().includes(searchValue) ||
+        lead.category.toLowerCase().includes(searchValue);
 
       const matchesStatus =
         status === "All" || lead.status === status;
@@ -135,7 +162,9 @@ const Page = () => {
     }
 
     if (sort === "name") {
-      result.sort((a, b) => a.name.localeCompare(b.name));
+      result.sort((a, b) =>
+        a.name.localeCompare(b.name)
+      );
     }
 
     if (sort === "recent") {
@@ -150,7 +179,10 @@ const Page = () => {
       {/* Navbar */}
       <header className="sticky top-0 z-50 border-b border-zinc-800 bg-zinc-950/90 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 py-4 flex items-center justify-between">
-          <Link href="/dashboard" className="flex items-center gap-2">
+          <Link
+            href="/dashboard"
+            className="flex items-center gap-2"
+          >
             <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center">
               <span className="font-bold">L</span>
             </div>
@@ -183,7 +215,6 @@ const Page = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8 py-8">
-
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-zinc-500 mb-7">
           <Link
@@ -211,7 +242,6 @@ const Page = () => {
 
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-8">
-
           <div>
             <div className="flex items-center gap-3">
               <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
@@ -247,7 +277,6 @@ const Page = () => {
 
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-
           <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
             <p className="text-xs text-zinc-500">
               Total Leads
@@ -287,14 +316,11 @@ const Page = () => {
               5
             </p>
           </div>
-
         </div>
 
         {/* Filters */}
         <section className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 mb-4">
-
           <div className="flex flex-col lg:flex-row gap-3">
-
             {/* Search */}
             <div className="relative flex-1">
               <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-600">
@@ -313,21 +339,29 @@ const Page = () => {
             {/* Status */}
             <select
               value={status}
-              onChange={(e) => setStatus(e.target.value)}
+              onChange={(e) =>
+                setStatus(
+                  e.target.value as LeadStatus | "All"
+                )
+              }
               className="px-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800 text-sm text-zinc-300 outline-none focus:border-red-500"
             >
-              <option>All</option>
-              <option>New</option>
-              <option>Qualified</option>
-              <option>Contacted</option>
-              <option>Interested</option>
-              <option>Not interested</option>
+              <option value="All">All</option>
+              <option value="New">New</option>
+              <option value="Qualified">Qualified</option>
+              <option value="Contacted">Contacted</option>
+              <option value="Interested">Interested</option>
+              <option value="Not interested">
+                Not interested
+              </option>
             </select>
 
             {/* Sort */}
             <select
               value={sort}
-              onChange={(e) => setSort(e.target.value)}
+              onChange={(e) =>
+                setSort(e.target.value as SortOption)
+              }
               className="px-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800 text-sm text-zinc-300 outline-none focus:border-red-500"
             >
               <option value="score">
@@ -342,16 +376,13 @@ const Page = () => {
                 Recently added
               </option>
             </select>
-
           </div>
         </section>
 
         {/* Leads table */}
         <section className="rounded-2xl border border-zinc-800 bg-zinc-900/50 overflow-hidden">
-
           {/* Desktop table */}
           <div className="hidden xl:block overflow-x-auto">
-
             <table className="w-full">
               <thead className="border-b border-zinc-800 bg-zinc-900/80">
                 <tr className="text-left">
@@ -379,13 +410,11 @@ const Page = () => {
                     Activity
                   </th>
 
-                  <th className="px-5 py-4">
-                  </th>
+                  <th className="px-5 py-4" />
                 </tr>
               </thead>
 
               <tbody className="divide-y divide-zinc-800">
-
                 {filteredLeads.map((lead) => (
                   <tr
                     key={lead.id}
@@ -394,7 +423,6 @@ const Page = () => {
                     {/* Business */}
                     <td className="px-5 py-5">
                       <div className="flex items-center gap-3">
-
                         <div className="w-10 h-10 rounded-lg bg-zinc-800 flex items-center justify-center font-semibold">
                           {lead.name.charAt(0)}
                         </div>
@@ -425,11 +453,12 @@ const Page = () => {
                     {/* Score */}
                     <td className="px-5 py-5">
                       <div className="flex items-center gap-3">
-
                         <div className="w-16 h-1.5 rounded-full bg-zinc-800 overflow-hidden">
                           <div
                             className="h-full bg-gradient-to-r from-red-500 to-orange-500 rounded-full"
-                            style={{ width: `${lead.score}%` }}
+                            style={{
+                              width: `${lead.score}%`,
+                            }}
                           />
                         </div>
 
@@ -466,7 +495,10 @@ const Page = () => {
                     <td className="px-5 py-5">
                       <button
                         type="button"
-                        onClick={() => setSelectedLead(lead)}
+                        aria-label={`View ${lead.name}`}
+                        onClick={() =>
+                          setSelectedLead(lead)
+                        }
                         className="text-zinc-500 hover:text-white transition"
                       >
                         →
@@ -474,26 +506,23 @@ const Page = () => {
                     </td>
                   </tr>
                 ))}
-
               </tbody>
             </table>
-
           </div>
 
           {/* Mobile / Tablet cards */}
           <div className="xl:hidden divide-y divide-zinc-800">
-
             {filteredLeads.map((lead) => (
               <button
                 key={lead.id}
                 type="button"
-                onClick={() => setSelectedLead(lead)}
+                onClick={() =>
+                  setSelectedLead(lead)
+                }
                 className="w-full text-left p-5 hover:bg-zinc-900 transition"
               >
                 <div className="flex justify-between gap-4">
-
                   <div className="flex gap-3">
-
                     <div className="w-10 h-10 shrink-0 rounded-lg bg-zinc-800 flex items-center justify-center font-semibold">
                       {lead.name.charAt(0)}
                     </div>
@@ -512,7 +541,6 @@ const Page = () => {
                       </p>
 
                       <div className="flex flex-wrap items-center gap-2 mt-3">
-
                         <span
                           className={`px-2 py-1 rounded-md text-[10px] ${statusStyles[lead.status]}`}
                         >
@@ -522,7 +550,6 @@ const Page = () => {
                         <span className="px-2 py-1 rounded-md bg-zinc-800 text-zinc-500 text-[10px]">
                           Score {lead.score}
                         </span>
-
                       </div>
                     </div>
                   </div>
@@ -530,14 +557,12 @@ const Page = () => {
                   <span className="text-zinc-600">
                     →
                   </span>
-
                 </div>
               </button>
             ))}
-
           </div>
 
-          {/* Empty */}
+          {/* Empty state */}
           {filteredLeads.length === 0 && (
             <div className="p-12 text-center">
               <div className="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-800 mx-auto flex items-center justify-center text-zinc-600">
@@ -553,7 +578,6 @@ const Page = () => {
               </p>
             </div>
           )}
-
         </section>
 
         {/* Bottom */}
@@ -577,14 +601,13 @@ const Page = () => {
           {/* Overlay */}
           <button
             type="button"
-            aria-label="Close"
+            aria-label="Close lead details"
             onClick={() => setSelectedLead(null)}
             className="absolute inset-0 bg-black/60 backdrop-blur-sm cursor-default"
           />
 
           {/* Drawer */}
           <aside className="absolute right-0 top-0 h-full w-full sm:max-w-lg bg-zinc-950 border-l border-zinc-800 overflow-y-auto">
-
             <div className="p-6 border-b border-zinc-800 flex items-center justify-between">
               <div>
                 <p className="text-xs text-zinc-600">
@@ -598,6 +621,7 @@ const Page = () => {
 
               <button
                 type="button"
+                aria-label="Close"
                 onClick={() => setSelectedLead(null)}
                 className="w-9 h-9 rounded-lg border border-zinc-800 text-zinc-500 hover:text-white transition"
               >
@@ -606,10 +630,8 @@ const Page = () => {
             </div>
 
             <div className="p-6 space-y-6">
-
               {/* Score */}
               <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
-
                 <div className="flex justify-between items-center">
                   <div>
                     <p className="text-xs text-zinc-500">
@@ -645,7 +667,6 @@ const Page = () => {
                 </h3>
 
                 <div className="mt-4 space-y-3">
-
                   <div className="flex justify-between gap-5">
                     <span className="text-sm text-zinc-600">
                       Category
@@ -675,13 +696,11 @@ const Page = () => {
                       {selectedLead.website}
                     </span>
                   </div>
-
                 </div>
               </div>
 
               {/* AI Analysis */}
               <div className="rounded-xl border border-red-500/20 bg-red-500/[0.03] p-5">
-
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-red-500/10 text-red-400 flex items-center justify-center text-xs font-bold">
                     AI
@@ -693,10 +712,12 @@ const Page = () => {
                 </div>
 
                 <p className="text-sm text-zinc-400 leading-6 mt-4">
-                  {selectedLead.name} appears to have an opportunity
-                  around {selectedLead.opportunity.toLowerCase()}.
-                  Consider reviewing the business's current online
-                  presence before contacting them.
+                  {selectedLead.name} appears to have an
+                  opportunity around{" "}
+                  {selectedLead.opportunity.toLowerCase()}.
+                  Consider reviewing the business&apos;s
+                  current online presence before contacting
+                  them.
                 </p>
               </div>
 
@@ -707,33 +728,30 @@ const Page = () => {
                 </h3>
 
                 <div className="mt-4 p-4 rounded-xl bg-zinc-900/50 border border-zinc-800">
-
-                  <div className="flex justify-between">
+                  <div className="flex justify-between gap-4">
                     <span className="text-sm text-zinc-500">
                       Current status
                     </span>
 
-                    <span className="text-sm text-zinc-300">
+                    <span className="text-sm text-zinc-300 text-right">
                       {selectedLead.contacted}
                     </span>
                   </div>
 
-                  <div className="flex justify-between mt-4">
+                  <div className="flex justify-between gap-4 mt-4">
                     <span className="text-sm text-zinc-500">
                       Last activity
                     </span>
 
-                    <span className="text-sm text-zinc-300">
+                    <span className="text-sm text-zinc-300 text-right">
                       {selectedLead.lastActivity}
                     </span>
                   </div>
-
                 </div>
               </div>
 
               {/* Actions */}
               <div className="space-y-3">
-
                 <button
                   type="button"
                   className="w-full py-3 rounded-xl bg-gradient-to-r from-red-500 to-orange-500 font-semibold hover:from-red-400 hover:to-orange-400 transition"
@@ -747,9 +765,7 @@ const Page = () => {
                 >
                   Mark as Qualified
                 </button>
-
               </div>
-
             </div>
           </aside>
         </div>

@@ -3,11 +3,16 @@
 import Link from "next/link";
 import React, { useState } from "react";
 
-const Page = () => {
-  const [selectedChannels, setSelectedChannels] = useState(["email"]);
-  const [aiCalling, setAiCalling] = useState(false);
+type OutreachChannel = "email" | "whatsapp";
 
-  const toggleChannel = (channel) => {
+const Page = () => {
+  const [selectedChannels, setSelectedChannels] = useState<
+    OutreachChannel[]
+  >(["email"]);
+
+  const [aiCalling, setAiCalling] = useState<boolean>(false);
+
+  const toggleChannel = (channel: OutreachChannel): void => {
     setSelectedChannels((prev) =>
       prev.includes(channel)
         ? prev.filter((item) => item !== channel)
@@ -24,6 +29,7 @@ const Page = () => {
             <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center">
               <span className="font-bold">L</span>
             </div>
+
             <span className="text-xl font-bold">LivLead</span>
           </Link>
 
@@ -48,8 +54,8 @@ const Page = () => {
           </h1>
 
           <p className="mt-3 text-zinc-400 leading-7">
-            Decide how LivLead should reach your discovered businesses.
-            You can use multiple channels in the same campaign.
+            Decide how LivLead should reach your discovered businesses. You can
+            use multiple channels in the same campaign.
           </p>
         </div>
 
@@ -59,6 +65,7 @@ const Page = () => {
             <span className="w-8 h-8 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center text-sm font-bold">
               ✓
             </span>
+
             <span className="text-sm">Target</span>
           </div>
 
@@ -68,6 +75,7 @@ const Page = () => {
             <span className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center text-sm font-bold">
               2
             </span>
+
             <span className="text-sm font-medium">Outreach</span>
           </div>
 
@@ -77,6 +85,7 @@ const Page = () => {
             <span className="w-8 h-8 rounded-full border border-zinc-800 flex items-center justify-center text-sm">
               3
             </span>
+
             <span className="text-sm">Review</span>
           </div>
         </div>
@@ -85,9 +94,7 @@ const Page = () => {
           {/* Outreach Channels */}
           <section className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 sm:p-8">
             <div className="mb-7">
-              <h2 className="text-xl font-semibold">
-                Outreach channels
-              </h2>
+              <h2 className="text-xl font-semibold">Outreach channels</h2>
 
               <p className="text-sm text-zinc-500 mt-1">
                 Select the channels you want to use for this campaign.
@@ -162,8 +169,8 @@ const Page = () => {
                 <h3 className="font-semibold mt-5">WhatsApp</h3>
 
                 <p className="text-sm text-zinc-500 mt-2 leading-6">
-                  Start a personalized WhatsApp conversation with
-                  potential leads.
+                  Start a personalized WhatsApp conversation with potential
+                  leads.
                 </p>
               </button>
 
@@ -202,14 +209,14 @@ const Page = () => {
                 </div>
 
                 <p className="text-sm text-zinc-500 mt-2 leading-6">
-                  Let an AI voice agent have a natural conversation
-                  with qualified businesses.
+                  Let an AI voice agent have a natural conversation with
+                  qualified businesses.
                 </p>
               </button>
             </div>
           </section>
 
-          {/* Email configuration */}
+          {/* Email Configuration */}
           {selectedChannels.includes("email") && (
             <section className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 sm:p-8">
               <div className="mb-7">
@@ -223,6 +230,7 @@ const Page = () => {
               </div>
 
               <div className="space-y-5">
+                {/* Sender Name */}
                 <div>
                   <label className="block text-sm font-medium text-zinc-300 mb-2">
                     Sender name
@@ -235,6 +243,7 @@ const Page = () => {
                   />
                 </div>
 
+                {/* Email Subject */}
                 <div>
                   <label className="block text-sm font-medium text-zinc-300 mb-2">
                     Email subject
@@ -247,6 +256,7 @@ const Page = () => {
                   />
                 </div>
 
+                {/* Message */}
                 <div>
                   <label className="block text-sm font-medium text-zinc-300 mb-2">
                     Message
@@ -267,7 +277,7 @@ const Page = () => {
             </section>
           )}
 
-          {/* AI Calling */}
+          {/* AI Calling Configuration */}
           {aiCalling && (
             <section className="rounded-2xl border border-red-500/30 bg-red-500/[0.03] p-6 sm:p-8">
               <div className="flex items-start gap-4">
@@ -287,13 +297,13 @@ const Page = () => {
                   </div>
 
                   <p className="text-sm text-zinc-500 mt-1">
-                    Configure how the AI should represent you during
-                    calls.
+                    Configure how the AI should represent you during calls.
                   </p>
                 </div>
               </div>
 
               <div className="grid md:grid-cols-2 gap-5 mt-7">
+                {/* Agent Name */}
                 <div>
                   <label className="block text-sm font-medium text-zinc-300 mb-2">
                     Agent name
@@ -306,6 +316,7 @@ const Page = () => {
                   />
                 </div>
 
+                {/* Voice Style */}
                 <div>
                   <label className="block text-sm font-medium text-zinc-300 mb-2">
                     Voice style
@@ -319,6 +330,7 @@ const Page = () => {
                 </div>
               </div>
 
+              {/* Agent Instructions */}
               <div className="mt-5">
                 <label className="block text-sm font-medium text-zinc-300 mb-2">
                   Agent instructions
@@ -331,27 +343,24 @@ const Page = () => {
                 />
               </div>
 
+              {/* Example */}
               <div className="mt-5 p-4 rounded-xl border border-zinc-800 bg-zinc-950">
-                <p className="text-xs text-zinc-500">
-                  Example
-                </p>
+                <p className="text-xs text-zinc-500">Example</p>
 
                 <p className="text-sm text-zinc-300 mt-2 leading-6">
                   &quot;Introduce yourself, explain why you&apos;re calling,
-                  mention the opportunity identified for the business,
-                  ask whether they are interested, and capture their
+                  mention the opportunity identified for the business, ask
+                  whether they are interested, and capture their
                   response.&quot;
                 </p>
               </div>
             </section>
           )}
 
-          {/* Follow up */}
+          {/* Follow Up */}
           <section className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 sm:p-8">
             <div className="mb-7">
-              <h2 className="text-xl font-semibold">
-                Follow-up
-              </h2>
+              <h2 className="text-xl font-semibold">Follow-up</h2>
 
               <p className="text-sm text-zinc-500 mt-1">
                 Decide what LivLead should do when a lead doesn&apos;t
@@ -378,17 +387,17 @@ const Page = () => {
             </label>
           </section>
 
-          {/* Footer actions */}
+          {/* Footer Actions */}
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-3">
             <Link
-              href="/Campaign/create"
+              href="/campaign/create"
               className="text-sm text-zinc-500 hover:text-white transition"
             >
               ← Back to Target
             </Link>
 
             <Link
-              href="/Campaign/review"
+              href="/campaign/review"
               className="w-full sm:w-auto text-center px-7 py-3.5 rounded-xl bg-gradient-to-r from-red-500 to-orange-500 text-white font-semibold hover:from-red-400 hover:to-orange-400 transition shadow-lg shadow-red-500/10"
             >
               Continue to Review →
